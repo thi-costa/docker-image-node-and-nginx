@@ -1,32 +1,17 @@
 # syntax=docker/dockerfile:1
-FROM node:19.0.0-alpine3.16
+FROM node:19.0.0-alpine3.16 AS build-env
 
 WORKDIR /usr/src/app
 
 COPY . .
-RUN ls
-RUN npm install
+RUN npm install --omit=dev
 
+# Use smaller image
+FROM gcr.io/distroless/nodejs18-debian11
+
+COPY --from=build-env /usr/src/app/node_modules /usr/src/app/node_modules
+COPY --from=build-env /usr/src/app/index.js /usr/src/app
+
+WORKDIR /usr/src/app
 EXPOSE 8080
-
-CMD ["node", "index.js"]
-
-# FROM node:19.0.0-alpine3.16 AS builder
-
-# # Definir WORKDIR
-# WORKDIR /usr/src/app
-
-# ADD . .
-
-# # Use smaller image
-# # FROM gcr.io/distroless/nodejs18-debian11
-
-# # WORKDIR /usr/src/app
-# # COPY --from=builder /usr/src/app/index.js .
-
-# EXPOSE 8080
-
-# CMD ["node", "index.js"]
-
-# # Keep container running
-# # ENTRYPOINT ["tail", "-f", "/dev/null"]
+CMD ["index.js"]
