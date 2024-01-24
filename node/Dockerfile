@@ -14,4 +14,5 @@ COPY --from=build-env /usr/src/app/index.js /usr/src/app
 
 WORKDIR /usr/src/app
 EXPOSE 8080
+
 CMD ["index.js"]
