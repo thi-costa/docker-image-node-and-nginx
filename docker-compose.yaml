@@ -1,19 +1,44 @@
 version: '3'
 
 services:
+  db:
+    image: mysql:5.7
+    container_name: db
+    restart: always
+    tty: true
+    volumes:
+      - ./mysql/volumes:/var/lib/mysql
+    environment:
+      - MYSQL_DATABASE=nodedb
+      - MYSQL_ROOT_PASSWORD=root
+    networks:
+      - revprox   # Conectar a rede de proxy reverso
   server1:
     container_name: server1
+    image: node-app-th
     build: 
       context: ./node
-    restart: on-failure
-    ports:
-      - "81:8080"
+    restart: always
+    depends_on:
+      - db
+    networks:
+      - revprox   # Connect server1 to the revprox network
   nginx:
     container_name: nginx
+    image: nginx-th
     build: 
       context: ./nginx
+    restart: always
     tty: true
     ports:
-      - "8080:8080"
+      - "8080:80"
     depends_on:
       - server1
+    networks:
+      - revprox   # Connect nginx to the revprox network
+
+  
+
+networks:
+  revprox:
+    driver: bridge

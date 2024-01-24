@@ -1,5 +1,2 @@
 ### GET request passing by nginx (expect 200)
 GET http://localhost:8080
-
-### GET request directly to where host connects to node app (expect 403)
-GET http://localhost:81
