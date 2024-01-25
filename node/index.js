@@ -44,8 +44,13 @@ app.get('/', (_req, res) => {
         connection.query('CREATE TABLE people(name VARCHAR(250))');
     }
 
-    connection.query(`INSERT INTO people(name) values('Catarina')`);
-    connection.query(`INSERT INTO people(name) values('Bruna')`);
+    connection.query(`INSERT INTO people(name) values('Catarina'), ('Bruna')`, function (error, results, _fields) {
+        if (error) {
+            console.error('❌ Query falhou: ', error);
+            throw error;
+        }
+        console.log('✅ Query bem-sucedida. Resultados: ', {results});
+    });
     response += '<h1>Full Cycle Rocks!</h1>\n';
     response += '<ul>\n';
 
