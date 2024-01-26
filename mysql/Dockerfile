@@ -1,6 +1,5 @@
 FROM mysql:5.7
 
-# Active native AIO on linux
-CMD [ "--innodb-use-native-aio=0" ]
+ADD ./init.sql /docker-entrypoint-initdb.d/
 
-ADD setup.sql /docker-entrypoint-initdb.d/
+EXPOSE 3306
